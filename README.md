@@ -168,68 +168,42 @@ Endpoints used:
     ```
   - Response: Array with `service_tag_number`, `name`, `allocation_date`, `cost_center`, `location`, `email`.
 
-Notes:
-- Dashboard charts use [src/app/api/dashboard/route.ts](./inventory-dashboard/src/app/api/dashboard/route.ts:0:0-0:0) for mock data in development.
-- Ensure FastAPI is running locally for form pages.
-
 ## Getting started
 
-1) Install dependencies (from `inventory-dashboard/`):
+1. Install dependencies (from `inventory-dashboard/`):
 ```bash
 npm install
-undefined
-Run the frontend:
-bash
+```
+2. Run the frontend:
+```bash
 npm run dev
+```
 Open http://localhost:3000
 
-Ensure backend is running:
-FastAPI at http://127.0.0.1:8000.
-Production build:
-bash
+3. Ensure backend is running:
+   - FastAPI at http://127.0.0.1:8000
+
+4. Production build:
+```bash
 npm run build
 npm run start
-Configuration and environment
-API base URL is hardcoded in:
-src/app/add-resource-allocation/page.tsx
-src/app/update-resource-allocation/page.tsx
-src/app/person-view/page.tsx
-Recommended improvement:
-Use NEXT_PUBLIC_API_BASE_URL and centralize fetch logic.
-Tailwind CSS v4 configured via @tailwindcss/postcss.
-Global styles: 
-src/app/globals.css
-.
-Troubleshooting
-CORS errors:
-Allow http://localhost:3000 in the FastAPI CORS settings.
-Network errors/404:
-Confirm backend endpoints and that FastAPI is running at 127.0.0.1:8000.
-Date format issues:
-Update page normalizes to YYYY-MM-DD. If backend differs, adjust normalization.
-Email validation discrepancies:
-Add/Person View require @t-systems.com; Update page allows any valid email or empty.
-Future improvements
-Centralize API base URL and request utilities.
-Adopt React Hook Form for consistent form/state handling.
-Share a single source for location options.
-Replace alerts with a toast/notification system.
-Wire dashboard to live backend endpoints.
-Add end-to-end tests for critical flows.
-Frontend: inventory-dashboard/
-Backend: action_server/
-Run both for full functionality.
+```
 
+## Configuration and environment
 
+* API base URL is hardcoded in:
+  - src/app/add-resource-allocation/page.tsx
+  - src/app/update-resource-allocation/page.tsx
+  - src/app/person-view/page.tsx
+* Recommended improvement: Use `NEXT_PUBLIC_API_BASE_URL` and centralize fetch logic.
+* Tailwind CSS v4 configured via `@tailwindcss/postcss`.
+* Global styles: `src/app/globals.css`
 
-Dashboard widgets used by [DashboardContent.tsx](./inventory-dashboard/src/components/DashboardContent.tsx:0:0-0:0):
-- `InventoryInsights`
-- `DeployedModelView`
-- `StockModelView`
-- `DeployedModelSubStatus`
-- `StockModelSubStatus`
-
-These consume mock data from [src/app/api/dashboard/route.ts](./inventory-dashboard/src/app/api/dashboard/route.ts:0:0-0:0) and render with `recharts`.
+## Troubleshooting
+- CORS errors: Allow `http://localhost:3000` in the FastAPI CORS settings.
+- Network errors/404: Confirm backend endpoints and that FastAPI is running at `127.0.0.1:8000`.
+- Date format issues: Update page normalizes to `YYYY-MM-DD`. If backend differs, adjust normalization.
+- Email validation discrepancies: Add/Person View require `@t-systems.com`; Update page allows any valid email or empty.
 
 ## Pages and user flows
 
@@ -339,9 +313,3 @@ Endpoints used:
 Notes:
 - Dashboard charts use [src/app/api/dashboard/route.ts](./inventory-dashboard/src/app/api/dashboard/route.ts:0:0-0:0) for mock data in development.
 - Ensure FastAPI is running locally for form pages.
-
-## Getting started
-
-1) Install dependencies (from `inventory-dashboard/`):
-```bash
-npm install
