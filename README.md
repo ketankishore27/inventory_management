@@ -45,6 +45,9 @@ Key paths:
 - [src/app/add-resource-allocation/page.tsx](./inventory-dashboard/src/app/add-resource-allocation/page.tsx:0:0-0:0) — `/add-resource-allocation` page.
 - [src/app/update-resource-allocation/page.tsx](./inventory-dashboard/src/app/update-resource-allocation/page.tsx:0:0-0:0) — `/update-resource-allocation` page.
 - [src/app/person-view/page.tsx](./inventory-dashboard/src/app/person-view/page.tsx:0:0-0:0) — `/person-view` page.
+- [src/app/delete-resources/page.tsx](./inventory-dashboard/src/app/delete-resources/page.tsx:0:0-0:0) — `/delete-resources` page.
+- [src/app/available-resources/page.tsx](./inventory-dashboard/src/app/available-resources/page.tsx:0:0-0:0) — `/available-resources` page.
+- [src/app/eow-resources/page.tsx](./inventory-dashboard/src/app/eow-resources/page.tsx:0:0-0:0) — `/eow-resources` page.
 - [src/app/api/dashboard/route.ts](./inventory-dashboard/src/app/api/dashboard/route.ts:0:0-0:0) — Mock API route for dashboard charts.
 - [src/components/DashboardContent.tsx](./inventory-dashboard/src/components/DashboardContent.tsx:0:0-0:0) — Dashboard composition component.
 - [src/app/layout.tsx](./inventory-dashboard/src/app/layout.tsx:0:0-0:0), [src/app/globals.css](./inventory-dashboard/src/app/globals.css:0:0-0:0) — App layout and global styles.
@@ -100,6 +103,29 @@ File: [src/app/person-view/page.tsx](./inventory-dashboard/src/app/person-view/p
 - Email requires `@t-systems.com` domain.
 - Results appear as responsive cards; details open in a modal.
 - Backend: `POST /getResourceAllocation`.
+
+### 5) Available Resources (`/available-resources`)
+File: [src/app/available-resources/page.tsx](./inventory-dashboard/src/app/available-resources/page.tsx:0:0-0:0)
+- Purpose: View all stock devices with rich client-side filtering.
+- Filters:
+  - Field selector (Service Tag, Status, Sub-Status, Ordered By, Make/Model, PO, Ownership, Deployed Date, Location, Received, Warranty End/Date/Status, Year)
+  - Multi-value input: accepts comma/semicolon/newline separated tokens.
+  - Dropdown suggestions: shows recommended values based on selected field; click to insert; auto appends ", ".
+  - Token chips displayed under the input.
+- Apply/Clear Filters buttons control filtering.
+- Backend: `POST /getStockDevicesDetailed`.
+
+### 6) EOW Resources (`/eow-resources`)
+File: [src/app/eow-resources/page.tsx](./inventory-dashboard/src/app/eow-resources/page.tsx:0:0-0:0)
+- Purpose: View devices with End-of-Warranty (EOW) status.
+- Same filter UX and behavior as Available Resources.
+- Backend: `POST /showEowResources`.
+
+### 7) Delete Resources (`/delete-resources`)
+File: [src/app/delete-resources/page.tsx](./inventory-dashboard/src/app/delete-resources/page.tsx:0:0-0:0)
+- Purpose: Look up a record by Mac Serial Number and delete it.
+- Flow: Search by serial → show read-only details → Confirm Delete.
+- Backend: `POST /getSerialnumberAllocation`, `POST /deleteResources`.
 
 ## Validation rules
 
@@ -168,6 +194,23 @@ Endpoints used:
     ```
   - Response: Array with `service_tag_number`, `name`, `allocation_date`, `cost_center`, `location`, `email`.
 
+- `POST /getStockDevicesDetailed`
+  - Request: none
+  - Response: Array of stock devices with fields:
+    `service_tag_number`, `status`, `sub_status`, `ordered_by`, `make_model`, `po`, `ownership`,
+    `deployed_date`, `location`, `received`, `warranty_end`, `warranty_date`, `warranty_status`, `year`.
+
+- `POST /showEowResources`
+  - Request: none
+  - Response: Array of inventory records (same shape as stock devices) filtered to EOW items.
+
+- `POST /deleteResources`
+  - Request:
+    ```json
+    { "serialnumber": "XYZ123" }
+    ```
+  - Response: `{ "status": "Success" }` on success.
+
 ## Getting started
 
 1. Install dependencies (from `inventory-dashboard/`):
@@ -195,6 +238,9 @@ npm run start
   - src/app/add-resource-allocation/page.tsx
   - src/app/update-resource-allocation/page.tsx
   - src/app/person-view/page.tsx
+  - src/app/delete-resources/page.tsx
+  - src/app/available-resources/page.tsx
+  - src/app/eow-resources/page.tsx
 * Recommended improvement: Use `NEXT_PUBLIC_API_BASE_URL` and centralize fetch logic.
 * Tailwind CSS v4 configured via `@tailwindcss/postcss`.
 * Global styles: `src/app/globals.css`

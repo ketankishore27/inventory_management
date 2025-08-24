@@ -2,10 +2,11 @@
 
 import React, { useState } from 'react'
 
-export default function UpdateResourceAllocationPage() {
+export default function DeleteResourcesPage() {
   const [serialNumber, setSerialNumber] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
+  const [deleting, setDeleting] = useState(false)
   const [allocation, setAllocation] = useState<{
     name: string
     allocation_date: string
@@ -14,10 +15,6 @@ export default function UpdateResourceAllocationPage() {
     email: string
     detail: string
   } | null>(null)
-  const [updating, setUpdating] = useState(false)
-  const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/
-  const [emailError, setEmailError] = useState<string | null>(null)
-  const allowedLocations = ['Pune', 'Bangalore']
 
   const normalizeDateToYMD = (val: string): string => {
     if (!val) return ''
@@ -60,11 +57,11 @@ export default function UpdateResourceAllocationPage() {
         name: record?.name ?? '',
         allocation_date: normalizeDateToYMD(record?.allocation_date ?? ''),
         cost_center: record?.cost_center ?? '',
-        location: allowedLocations.includes((record?.location ?? '')) ? record.location : '',
+        location: record?.location ?? '',
         email: record?.email ?? '',
         detail: (record?.detail ?? record?.details) ?? '',
       })
-      setMessage('Record loaded. You can edit the fields below.')
+      setMessage('Record loaded.')
     } catch (err) {
       console.error(err)
       setMessage('Search failed. Please try again.')
@@ -75,7 +72,7 @@ export default function UpdateResourceAllocationPage() {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-semibold text-gray-900 mb-4">Update Resource Allocation</h1>
+      <h1 className="text-2xl font-semibold text-gray-900 mb-4">Delete Resources</h1>
       <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm max-w-2xl">
         <form onSubmit={onSubmit} className="grid grid-cols-1 gap-6">
           <div>
@@ -111,15 +108,16 @@ export default function UpdateResourceAllocationPage() {
 
       {allocation && (
         <div className="mt-6 rounded-lg border border-gray-200 bg-white p-6 shadow-sm max-w-2xl">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Allocation Details</h2>
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Allocation Details (read-only)</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700">Name</label>
               <input
                 type="text"
                 value={allocation.name}
-                onChange={(e) => setAllocation(prev => prev ? { ...prev, name: e.target.value } : prev)}
-                className="mt-1 block w-full rounded-md bg-white text-gray-900 placeholder-gray-400 shadow-sm focus:border-red-500 focus:ring-red-500 border-gray-300"
+                readOnly
+                disabled
+                className="mt-1 block w-full rounded-md bg-gray-100 text-gray-900 placeholder-gray-400 border-gray-300"
               />
             </div>
             <div>
@@ -127,8 +125,9 @@ export default function UpdateResourceAllocationPage() {
               <input
                 type="date"
                 value={allocation.allocation_date}
-                onChange={(e) => setAllocation(prev => prev ? { ...prev, allocation_date: normalizeDateToYMD(e.target.value) } : prev)}
-                className="mt-1 block w-full rounded-md bg-white text-gray-900 placeholder-gray-400 shadow-sm focus:border-red-500 focus:ring-red-500 border-gray-300"
+                readOnly
+                disabled
+                className="mt-1 block w-full rounded-md bg-gray-100 text-gray-900 placeholder-gray-400 border-gray-300"
               />
             </div>
             <div>
@@ -136,102 +135,73 @@ export default function UpdateResourceAllocationPage() {
               <input
                 type="text"
                 value={allocation.cost_center}
-                onChange={(e) => setAllocation(prev => prev ? { ...prev, cost_center: e.target.value } : prev)}
-                className="mt-1 block w-full rounded-md bg-white text-gray-900 placeholder-gray-400 shadow-sm focus:border-red-500 focus:ring-red-500 border-gray-300"
+                readOnly
+                disabled
+                className="mt-1 block w-full rounded-md bg-gray-100 text-gray-900 placeholder-gray-400 border-gray-300"
               />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700">Location</label>
-              <select
+              <input
+                type="text"
                 value={allocation.location}
-                onChange={(e) => setAllocation(prev => prev ? { ...prev, location: e.target.value } : prev)}
-                className="mt-1 block w-full rounded-md bg-white text-gray-900 placeholder-gray-400 shadow-sm focus:border-red-500 focus:ring-red-500 border-gray-300"
-              >
-                <option value="" disabled>Select location</option>
-                <option value="Pune">Pune</option>
-                <option value="Bangalore">Bangalore</option>
-              </select>
+                readOnly
+                disabled
+                className="mt-1 block w-full rounded-md bg-gray-100 text-gray-900 placeholder-gray-400 border-gray-300"
+              />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700">Email</label>
               <input
                 type="email"
                 value={allocation.email}
-                onChange={(e) => {
-                  const val = e.target.value
-                  const trimmed = val.trim()
-                  setAllocation(prev => prev ? { ...prev, email: trimmed } : prev)
-                  if (!trimmed) {
-                    setEmailError(null)
-                  } else {
-                    setEmailError(emailRegex.test(trimmed) ? null : 'Please enter a valid email address')
-                  }
-                }}
-                className="mt-1 block w-full rounded-md bg-white text-gray-900 placeholder-gray-400 shadow-sm focus:border-red-500 focus:ring-red-500 border-gray-300"
+                readOnly
+                disabled
+                className="mt-1 block w-full rounded-md bg-gray-100 text-gray-900 placeholder-gray-400 border-gray-300"
               />
-              {emailError && <p className="mt-1 text-sm text-red-600">{emailError}</p>}
             </div>
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700">Detail</label>
               <input
                 type="text"
                 value={allocation.detail}
-                onChange={(e) => setAllocation(prev => prev ? { ...prev, detail: e.target.value } : prev)}
-                className="mt-1 block w-full rounded-md bg-white text-gray-900 placeholder-gray-400 shadow-sm focus:border-red-500 focus:ring-red-500 border-gray-300"
+                readOnly
+                disabled
+                className="mt-1 block w-full rounded-md bg-gray-100 text-gray-900 placeholder-gray-400 border-gray-300"
               />
             </div>
           </div>
           <div className="mt-6 flex items-center gap-3">
             <button
               type="button"
-              disabled={updating || !allocation || !!emailError}
+              disabled={deleting || !allocation}
               onClick={async () => {
-                if (!allocation) return
-                // final email validation (only if non-empty)
-                if (allocation.email && !emailRegex.test(allocation.email)) {
-                  setEmailError('Please enter a valid email address')
-                  setMessage('Please correct the email before updating.')
-                  return
-                }
                 try {
-                  setUpdating(true)
-                  const payload = {
-                    serialnumber: serialNumber,
-                    name: allocation.name,
-                    allocation_date: normalizeDateToYMD(allocation.allocation_date),
-                    cost_center: allocation.cost_center,
-                    location: allocation.location,
-                    email: allocation.email.trim(),
-                    detail: allocation.detail,
-                  }
-                  const res = await fetch('http://127.0.0.1:8000/updateResourceAllocation', {
+                  setDeleting(true)
+                  const res = await fetch('http://127.0.0.1:8000/deleteResources', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload),
+                    body: JSON.stringify({ serialnumber: serialNumber }),
                   })
                   const data = await res.json()
-                  if (!res.ok || data?.status !== 'Success') {
-                    setMessage('Update failed. Please try again.')
-                    window.alert('Update failed. Please try again.')
-                    return
+                  if (res.ok && data?.status === 'Success') {
+                    window.alert('Deleted successfully.')
+                    setAllocation(null)
+                    // Optionally clear the serial number
+                    // setSerialNumber('')
+                  } else {
+                    window.alert('Delete failed.')
                   }
-                  setMessage('Update successful.')
-                  window.alert('Update successful.')
-                  // Reset states after success
-                  setAllocation(null)
-                  setSerialNumber('')
-                  setEmailError(null)
-                  setMessage(null)
                 } catch (e) {
                   console.error(e)
-                  setMessage('Failed to update. Please try again.')
+                  window.alert('Delete failed. Please try again.')
                 } finally {
-                  setUpdating(false)
+                  setDeleting(false)
                 }
               }}
-              className={`inline-flex items-center rounded-md bg-red-600 px-4 py-2 text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 ${updating ? 'opacity-80 cursor-not-allowed' : ''}`}
+              className={`inline-flex items-center rounded-md bg-red-600 px-4 py-2 text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 ${deleting ? 'opacity-80 cursor-not-allowed' : ''}`}
             >
-              {updating ? 'Updating...' : 'Update Info'}
+              {deleting ? 'Deleting...' : 'Confirm Delete'}
             </button>
           </div>
         </div>

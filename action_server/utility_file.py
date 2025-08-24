@@ -34,6 +34,15 @@ def get_stock_devices():
 
     counts = pd.read_sql(text(sql_string), engine)
     return counts.to_dict("records")[0]
+
+def get_stock_devices_detailed():
+
+    sql_string = """
+    select * from inventory.inventory where lower(status) like '%stock%'
+    """
+
+    counts = pd.read_sql(text(sql_string), engine)
+    return counts.to_dict("records")
     
 
 def get_eow_devices():
@@ -95,7 +104,7 @@ def get_stockModel_subStatus():
     return {i[0]: i[1] for i in counts}
 
 def add_resource_allocation(data):
-    print(data)
+
     sample_frame = pd.DataFrame([data])
     col_mappings = {
         "name": "name",
@@ -114,12 +123,12 @@ def add_resource_allocation(data):
 
 def get_resource_allocation(data):
     
-    name = data.get("name", None)
-    email = data.get("email", None)
+    name = data.get("name", None).lower()
+    email = data.get("email", None).lower()
 
     sql_string = """
     select * from inventory.resources_allocation_all
-    where name = :name and email = :email
+    where lower(name) = :name and lower(email) = :email
     """
 
     with engine.begin() as conn:
@@ -129,10 +138,11 @@ def get_resource_allocation(data):
 
 def get_serialnumber_allocation(data):
 
-    serialnumber = data.get("serialnumber", None)
+    serialnumber = data.get("serialnumber", None).lower()
+
     sql_string = """
     select * from inventory.resources_allocation_all
-    where service_tag_number = :serialnumber
+    where lower(service_tag_number) = :serialnumber
     """
     
     with engine.begin() as conn:
@@ -142,8 +152,8 @@ def get_serialnumber_allocation(data):
 
 def update_resource_allocation(data):
     
-    serialnumber = data.get("serialnumber", None)
-    name = data.get("name", None)
+    serialnumber = data.get("serialnumber", None).lower()
+    name = data.get("name", None).lower()
     allocation_date = data.get("allocation_date", None)
     cost_center = data.get("cost_center", None)
     location = data.get("location", None)
@@ -157,12 +167,35 @@ def update_resource_allocation(data):
     location = :location,
     email = :email,
     detail = :detail
-    where service_tag_number = :serialnumber
+    where lower(service_tag_number) = :serialnumber
     """
     with engine.begin() as conn:
         conn.execute(text(sql_string), parameters={"serialnumber": serialnumber, "name": name, "allocation_date": allocation_date, "cost_center": cost_center, "location": location, "email": email, "detail": detail})
     
     return {"status": "Success"}
+
+def delete_resources(data):
     
+    serialnumber = data.get("serialnumber", None).lower()
+
+    sql_string = """
+    delete from inventory.resources_allocation_all
+    where lower(service_tag_number) = :serialnumber
+    """
+    with engine.begin() as conn:
+        conn.execute(text(sql_string), parameters={"serialnumber": serialnumber})
     
-    
+    return {"status": "Success"}
+
+def show_eow_resources():
+
+    sql_string = """
+    select * from inventory.inventory
+    where lower(warranty_status) like '%eow%'
+    order by year desc
+    """
+    with engine.begin() as conn:
+        result = pd.read_sql(text(sql_string), conn)
+    return result.to_dict("records")
+
+

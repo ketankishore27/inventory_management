@@ -75,6 +75,22 @@ def getStockDevices():
         print(f"Error encountered in get_stock_devices: {e}")
         return {"count": None}
 
+@app.post("/getStockDevicesDetailed")
+def getStockDevicesDetailed():
+    """
+    Get the count of stock devices.
+
+    Returns:
+        dict: A dictionary containing the count of stock devices.
+    """
+
+    try:
+        print("Request for getStockDevicesDetailed")
+        return get_stock_devices_detailed()
+    except Exception as e:
+        print(f"Error encountered in get_stock_devices_detailed: {e}")
+        return {"count": None}
+
 
 @app.post("/getEowDevices")
 def getEowDevices():
@@ -190,4 +206,22 @@ def updateResourceAllocation(data: dict):
         return update_resource_allocation(data)
     except Exception as e:
         print(f"Error encountered in update_resource_allocation: {e}")
+        return {"status": "Failed"}
+
+@app.post("/deleteResources")
+def deleteResources(data: dict):
+    try:
+        print("Request for deleteResources")
+        return delete_resources(data)
+    except Exception as e:
+        print(f"Error encountered in deletee_resources: {e}")
+        return {"status": "Failed"}
+
+@app.post("/showEowResources")
+def showEowResources():
+    try:
+        print("Request for showEowResources")
+        return show_eow_resources()
+    except Exception as e:
+        print(f"Error encountered in show_eow_resources: {e}")
         return {"status": "Failed"}

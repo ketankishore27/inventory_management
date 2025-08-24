@@ -15,10 +15,10 @@ const navigation = [
   { name: 'Dashboard', href: '/', icon: HomeIcon },
   { name: 'Add Resource Allocation', href: '/add-resource-allocation', icon: ShoppingCartIcon },
   { name: 'Update Resource Allocation', href: '/update-resource-allocation', icon: ShoppingCartIcon },
-  { name: 'Delete Resources', href: '#', icon: TrashIcon },
+  { name: 'Delete Resources', href: '/delete-resources', icon: TrashIcon },
   { name: 'Person View', href: '/person-view', icon: CubeIcon },
-  { name: 'Available Resources', href: '#', icon: ShoppingBagIcon },
-  { name: 'EOW Resources', href: '#', icon: WrenchIcon }
+  { name: 'Available Resources', href: '/available-resources', icon: ShoppingBagIcon },
+  { name: 'EOW Resources', href: '/eow-resources', icon: WrenchIcon }
 ]
 
 export default function Sidebar() {
