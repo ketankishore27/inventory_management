@@ -215,13 +215,7 @@ export default function EowResourcesPage() {
               </div>
             )}
           </div>
-          {tokens.length > 0 && (
-            <div className="mt-2 flex flex-wrap gap-2">
-              {tokens.map((t) => (
-                <span key={t} className="inline-flex items-center rounded px-2 py-0.5 text-xs font-medium bg-red-100 text-red-800 border border-red-200">{t}</span>
-              ))}
-            </div>
-          )}
+          
         </div>
         <div className="pb-0.5">
           <button

@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { 
   ClockIcon, 
   BellIcon, 
@@ -11,6 +12,10 @@ import {
 export default function Header() {
   const [now, setNow] = useState(new Date())
   const [visible, setVisible] = useState(true)
+  const [username, setUsername] = useState('')
+  const router = useRouter()
+  const [menuOpen, setMenuOpen] = useState(false)
+  const menuRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     let timeoutId: number | undefined
@@ -25,10 +30,43 @@ export default function Header() {
     }
   }, [])
 
+  useEffect(() => {
+    // Read username from cookie set during login
+    const userCookie = document.cookie.split('; ').find(c => c.startsWith('user='))
+    if (userCookie) {
+      try {
+        const value = decodeURIComponent(userCookie.split('=')[1] || '')
+        setUsername(value)
+      } catch {
+        // ignore decode errors
+      }
+    }
+  }, [])
+
+  useEffect(() => {
+    function onDocClick(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false)
+      }
+    }
+    if (menuOpen) document.addEventListener('mousedown', onDocClick)
+    return () => document.removeEventListener('mousedown', onDocClick)
+  }, [menuOpen])
+
+  const handleLogout = () => {
+    // Clear auth cookies and go to login
+    document.cookie = 'auth=; path=/; max-age=0'
+    document.cookie = 'user=; path=/; max-age=0'
+    setMenuOpen(false)
+    router.replace('/')
+  }
+
   const day = now.toLocaleDateString(undefined, { weekday: 'long' })
   const date = now.toLocaleDateString(undefined, { day: '2-digit', month: 'short', year: 'numeric' })
   const time = now.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit' })
   const formatted = `${day}, ${date} · ${time}`
+  const displayName = username.trim()
+  const initial = (displayName.charAt(0) || '').toUpperCase()
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">
       <div className="flex items-center justify-between px-4 py-3">
@@ -43,10 +81,7 @@ export default function Header() {
 
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-2">
-            <span className="text-sm font-medium text-gray-700">Zylker</span>
-            <svg className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
+            <span className="text-sm font-medium text-gray-700">{displayName}</span>
           </div>
           
           <button className="p-2 text-gray-400 hover:text-gray-500 hover:bg-gray-100 rounded-md">
@@ -61,8 +96,25 @@ export default function Header() {
             <QuestionMarkCircleIcon className="h-5 w-5" />
           </button>
           
-          <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-            <span className="text-sm font-medium text-gray-600">U</span>
+          <div className="relative" ref={menuRef}>
+            <button
+              type="button"
+              onClick={() => setMenuOpen(v => !v)}
+              className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center focus:outline-none hover:ring-2 hover:ring-gray-300"
+            >
+              <span className="text-sm font-medium text-gray-600">{initial}</span>
+            </button>
+            {menuOpen && (
+              <div className="absolute right-0 mt-2 w-40 rounded-md bg-white shadow-lg ring-1 ring-black/5 z-10">
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="block w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  Logout
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import Image from 'next/image'
 import { 
   HomeIcon, 
   CubeIcon, 
@@ -12,7 +13,7 @@ import {
 } from '@heroicons/react/24/outline'
 
 const navigation = [
-  { name: 'Dashboard', href: '/', icon: HomeIcon },
+  { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
   { name: 'Add Resource Allocation', href: '/add-resource-allocation', icon: ShoppingCartIcon },
   { name: 'Update Resource Allocation', href: '/update-resource-allocation', icon: ShoppingCartIcon },
   { name: 'Delete Resources', href: '/delete-resources', icon: TrashIcon },
@@ -27,12 +28,12 @@ export default function Sidebar() {
     <div className="hidden lg:flex lg:flex-shrink-0">
       <div className="flex w-64 flex-col">
         <div className="flex h-16 items-center px-4 bg-gray-900">
-          <div className="flex items-center">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-red-600">
-              <ShoppingCartIcon className="h-6 w-6 text-white" />
+          <Link href="/" className="flex items-center">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg overflow-hidden bg-white">
+              <Image src="/dl-telekom-logo-01.jpg" alt="Inventory Logo" width={28} height={28} className="object-contain" />
             </div>
             <span className="ml-2 text-xl font-semibold text-white">Inventory</span>
-          </div>
+          </Link>
         </div>
         <div className="flex flex-1 flex-col bg-gray-900">
           <nav className="flex-1 space-y-1 px-2 py-4">
