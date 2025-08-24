@@ -225,3 +225,12 @@ def showEowResources():
     except Exception as e:
         print(f"Error encountered in show_eow_resources: {e}")
         return {"status": "Failed"}
+
+@app.post("/getUserAuthorization")
+def getUserAuthorization(data: dict):
+    try:
+        print("Request for getUserAuthorization")
+        return get_user_authorization(data)
+    except Exception as e:
+        print(f"Error encountered in get_user_authorization: {e}")
+        return {"status": "Failed"}

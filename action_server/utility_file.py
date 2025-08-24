@@ -199,3 +199,19 @@ def show_eow_resources():
     return result.to_dict("records")
 
 
+def get_user_authorization(data):
+    
+    name = data.get("username", None).lower()
+    password = data.get("password", None)
+    
+    sql_string = """
+    select * from inventory.creds
+    where lower(username) = :name and password = :password
+    """
+    with engine.begin() as conn:
+        result = pd.read_sql(text(sql_string), conn, params={"name": name, "password": password})
+    
+    if result.empty:
+        return {"status": "Failed"}
+
+    return {"status": "Success"}

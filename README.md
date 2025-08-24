@@ -23,6 +23,17 @@ The frontend provides:
 
 All API calls assume a local FastAPI server at `http://127.0.0.1:8000`.
 
+### Authentication and session
+- The root route `/` is a Login page.
+- On successful login, we set cookies: `auth=1` and `user=<username>` and redirect to `/dashboard`.
+- `middleware.ts` protects app routes and redirects unauthenticated users to `/`.
+- `src/components/Header.tsx` reads the `user` cookie to display the exact username (no fallback), and provides an avatar dropdown with Logout which clears cookies and returns to `/`.
+
+### Branding and assets
+- The site logo uses `inventory-dashboard/public/dl-telekom-logo-01.jpg` everywhere (Sidebar, Login, and favicon).
+- Favicon is provided via `src/app/favicon.ico` or `src/app/icon.png`. Additionally, `src/app/layout.tsx` links `<link rel="icon" href="/dl-telekom-logo-01.jpg" />`.
+- Login page background uses `inventory-dashboard/public/login_page.jpg` with a subtle dark overlay for readability.
+
 ## Tech stack and scripts
 - Next.js: `15.4.6`
 - React: `19.1.0`
@@ -41,7 +52,8 @@ Scripts (in [inventory-dashboard/package.json](./inventory-dashboard/package.jso
 Frontend root: `inventory-dashboard/`
 
 Key paths:
-- [src/app/page.tsx](./inventory-dashboard/src/app/page.tsx:0:0-0:0) — Root route (`/`), renders the dashboard.
+- [src/app/page.tsx](./inventory-dashboard/src/app/page.tsx:0:0-0:0) — Root route (`/`), renders the Login page.
+- [src/app/dashboard/page.tsx](./inventory-dashboard/src/app/dashboard/page.tsx:0:0-0:0) — `/dashboard` (main dashboard).
 - [src/app/add-resource-allocation/page.tsx](./inventory-dashboard/src/app/add-resource-allocation/page.tsx:0:0-0:0) — `/add-resource-allocation` page.
 - [src/app/update-resource-allocation/page.tsx](./inventory-dashboard/src/app/update-resource-allocation/page.tsx:0:0-0:0) — `/update-resource-allocation` page.
 - [src/app/person-view/page.tsx](./inventory-dashboard/src/app/person-view/page.tsx:0:0-0:0) — `/person-view` page.
@@ -68,7 +80,13 @@ These consume mock data from [src/app/api/dashboard/route.ts](./inventory-dashbo
 
 ## Pages and user flows
 
-### 1) Dashboard (`/`)
+### Login (`/`)
+- File: [src/app/page.tsx](./inventory-dashboard/src/app/page.tsx:0:0-0:0)
+- Theme aligned with the sidebar (dark palette with red accents).
+- Uses Next.js `Image` for brand logo `/dl-telekom-logo-01.jpg` and a background `/login_page.jpg` with gradient overlay.
+- On success: sets `auth=1` and `user=<username>` cookies and redirects to `/dashboard`.
+
+### 1) Dashboard (`/dashboard`)
 - Renders [DashboardContent](cci:1://file:///Users/A118390615/Library/CloudStorage/OneDrive-DeutscheTelekomAG/Projects/COE_Projects/inventory_management/inventory-dashboard/src/components/DashboardContent.tsx:8:0-44:1), aggregating charts and insights.
 - Uses mocked dashboard data for local development.
 
