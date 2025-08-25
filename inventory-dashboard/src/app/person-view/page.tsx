@@ -9,6 +9,7 @@ type ResourceAllocation = {
   cost_center: string
   location: string
   email: string
+  detail?: string
 }
 
 export default function PersonViewPage() {
@@ -224,7 +225,7 @@ export default function PersonViewPage() {
               <div className="px-5 py-4">
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div>
-                    <p className="text-xs uppercase tracking-wide text-gray-500">Service Tag</p>
+                    <p className="text-xs uppercase tracking-wide text-gray-500">SerialNumber</p>
                     <p className="mt-1 text-sm font-medium text-gray-900">{selected.service_tag_number}</p>
                   </div>
                   <div>
@@ -246,6 +247,10 @@ export default function PersonViewPage() {
                   <div>
                     <p className="text-xs uppercase tracking-wide text-gray-500">Allocation Date</p>
                     <p className="mt-1 text-sm font-medium text-gray-900">{selected.allocation_date}</p>
+                  </div>
+                  <div className="sm:col-span-2">
+                    <p className="text-xs uppercase tracking-wide text-gray-500">Detail</p>
+                    <p className="mt-1 text-sm font-medium text-gray-900 whitespace-pre-wrap break-words">{selected.detail ?? '-'}</p>
                   </div>
                 </div>
               </div>
